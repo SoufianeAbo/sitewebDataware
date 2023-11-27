@@ -147,6 +147,9 @@ if (isset($_SESSION['email'])) {
             <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
                 <i class="fas fa-plus mr-3"></i> New Report
             </button> -->
+            <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+                <i class="fa-solid fa-users-gear mr-3"></i> Add team
+            </button>
         </div>
         <nav class="text-white text-base font-semibold pt-3">
             <a class="flex items-center active-nav-link text-white py-4 pl-6 nav-item cursor-pointer" id = "TeamsBtn">
@@ -231,7 +234,8 @@ if (isset($_SESSION['email'])) {
                 // Check if the user is logged in
                     // User is logged in
                     $equipeID = $_SESSION['equipeID'];
-                    $sql = "SELECT * FROM teams WHERE id = $equipeID";
+                    $currentMemberID = $_SESSION['id'];
+                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
                     
                     $result = $conn->query($sql);
 
@@ -291,457 +295,170 @@ if (isset($_SESSION['email'])) {
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your projects</h1>
 
                 <?php
-                include 'connection.php';
+                    include 'connection.php';
 
-                // Check if the user is logged in
+                    // Check if the user is logged in
                     // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
-                    
+
                     $result = $conn->query($sql);
 
                     while ($row = $result->fetch_assoc()) {
                         $projectID = $row['projectID'];
+                        $currentMemberID = $_SESSION['id'];
 
-                        $projectsQuery = "SELECT * FROM projects WHERE id = $projectID";
+                        $projectsQuery = "SELECT * FROM projects WHERE scrumMasterID = $currentMemberID";
                         $projectsResult = $conn->query($projectsQuery);
 
                         if ($projectsResult->num_rows > 0) {
-                            $projectsData = $projectsResult->fetch_assoc();
-                            $projectsImg = $projectsData['image'];
-                            $projectsName = $projectsData['name'];
-                            $projectsDesc = $projectsData['description'];
-                            $projectsScrum = $projectsData['scrumMasterID'];
-                            $projectsProd = $projectsData['productOwnerID'];
-                            $projectsDateStart = $projectsData['date_start'];
-                            $projectsDateEnd = $projectsData['date_end'];
-                            $projectsStatus = $projectsData['statut'];
+                            while ($projectsData = $projectsResult->fetch_assoc()) {
+                                $projectsImg = $projectsData['image'];
+                                $projectsName = $projectsData['name'];
+                                $projectsDesc = $projectsData['description'];
+                                $projectsScrum = $projectsData['scrumMasterID'];
+                                $projectsProd = $projectsData['productOwnerID'];
+                                $projectsDateStart = $projectsData['date_start'];
+                                $projectsDateEnd = $projectsData['date_end'];
+                                $projectsStatus = $projectsData['statut'];
+
+                                $scrumMasterQuery = "SELECT * FROM users WHERE id = $projectsScrum";
+                                $scrumMasterResult = $conn->query($scrumMasterQuery);
+
+                                if ($scrumMasterResult->num_rows > 0) {
+                                    $scrumMasterData = $scrumMasterResult->fetch_assoc();
+                                    $scrumMasterFirstName = $scrumMasterData['firstName'];
+                                    $scrumMasterLastName = $scrumMasterData['lastName'];
+                                    $scrumMasterImg = $scrumMasterData['image'];
+                                } else {
+                                    // Handle the case where the scrum master is not found
+                                    $scrumMasterFirstName = 'N/A';
+                                    $scrumMasterLastName = 'N/A';
+                                }
+
+                                $prodMasterQuery = "SELECT * FROM users WHERE id = $projectsProd";
+                                $prodMasterResult = $conn->query($prodMasterQuery);
+
+                                if ($prodMasterResult->num_rows > 0) {
+                                    $prodMasterData = $prodMasterResult->fetch_assoc();
+                                    $prodMasterFirstName = $prodMasterData['firstName'];
+                                    $prodMasterLastName = $prodMasterData['lastName'];
+                                    $prodMasterImg = $prodMasterData['image'];
+                                } else {
+                                    // Handle the case where the scrum master is not found
+                                    $prodMasterFirstName = 'N/A';
+                                    $prodMasterLastName = 'N/A';
+                                }
+
+                                echo '<div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow">';
+                                echo '<a href="#">';
+                                echo "<img class='rounded-t-lg' src='$projectsImg' alt='' />";
+                                echo '</a>';
+                                echo '<div class="p-5">';
+                                echo '<div class="flex justify-between">';
+                                echo '<a href="#" class="flex flex-col">';
+                                echo "<h5 class='text-2xl font-bold tracking-tight text-gray-900'>$projectsName</h5>";
+                                echo "<p class='text-red-900'><i class='fa-solid fa-user-gear pr-2'></i>$prodMasterFirstName $prodMasterLastName</p>";
+                                echo "<p class='mb-4 text-green-900'><i class='fa-solid fa-user-pen pr-2'></i>$scrumMasterFirstName $scrumMasterLastName</p>";
+                                echo '</a>';
+                                echo '';
+                                echo "<img src='$prodMasterImg' alt='' class='w-[14%] h-[14%] rounded-full border-2 border-red-700 relative'>";
+                                echo '</div>';
+                                echo "<p class='mb-3 font-normal text-gray-700'>$projectsDesc</p>";
+                                echo '<div class="flex flex-row items-center justify-between">';
+                                echo '<div>';
+                                echo '<a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">';
+                                echo 'More details';
+                                echo '<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">';
+                                echo '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>';
+                                echo '</a>';
+                                echo '</svg>';
+                                echo '</div>';
+                                echo '<div class="flex flex-col items-center">';
+                                echo "<p class='text-gray-500'>$projectsDateStart</p>";
+                                echo "<p class='text-gray-500'>$projectsDateEnd</p>";
+                                if ($projectsStatus == 'Active') {
+                                    echo '<p class="text-green-500">Active</p>';
+                                }
+                                echo '</div>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
                         } else {
-                            // Handle the case where the scrum master is not found
+                            // Handle the case where no projects are found for the current user
                         }
-
-                        $scrumMasterQuery = "SELECT * FROM users WHERE id = $projectsScrum";
-                        $scrumMasterResult = $conn->query($scrumMasterQuery);
-
-                        if ($scrumMasterResult->num_rows > 0) {
-                            $scrumMasterData = $scrumMasterResult->fetch_assoc();
-                            $scrumMasterFirstName = $scrumMasterData['firstName'];
-                            $scrumMasterLastName = $scrumMasterData['lastName'];
-                            $scrumMasterImg = $scrumMasterData['image'];
-                        } else {
-                            // Handle the case where the scrum master is not found
-                            $scrumMasterFirstName = 'N/A';
-                            $scrumMasterLastName = 'N/A';
-                        }
-
-                        $prodMasterQuery = "SELECT * FROM users WHERE id = $projectsProd";
-                        $prodMasterResult = $conn->query($prodMasterQuery);
-
-                        if ($prodMasterResult->num_rows > 0) {
-                            $prodMasterData = $prodMasterResult->fetch_assoc();
-                            $prodMasterFirstName = $prodMasterData['firstName'];
-                            $prodMasterLastName = $prodMasterData['lastName'];
-                            $prodMasterImg = $prodMasterData['image'];
-                        } else {
-                            // Handle the case where the scrum master is not found
-                            $prodMasterFirstName = 'N/A';
-                            $prodMasterLastName = 'N/A';
-                        }
-                        echo '<div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow">';
-                        echo '<a href="#">';
-                        echo "<img class='rounded-t-lg' src='$projectsImg' alt='' />";
-                        echo '</a>';
-                        echo '<div class="p-5">';
-                        echo '<div class = "flex justify-between">';
-                        echo '<a href="#" class = "flex flex-col">';
-                        echo "<h5 class='text-2xl font-bold tracking-tight text-gray-900'>$projectsName</h5>";
-                        echo "<p class = 'text-red-900'><i class='fa-solid fa-user-gear pr-2'></i>$prodMasterFirstName $prodMasterLastName</p>";
-                        echo "<p class = 'mb-4 text-green-900'><i class='fa-solid fa-user-pen pr-2'></i>$scrumMasterFirstName $scrumMasterLastName</p>";
-                        echo '</a>';
-                        echo '';
-                        echo "<img src='$prodMasterImg' alt='' class = 'w-[14%] h-[14%] rounded-full border-2 border-red-700 relative'>";
-                        echo '</div>';
-                        echo "<p class='mb-3 font-normal text-gray-700'>$projectsDesc</p>";
-                        echo '<div class = "flex flex-row items-center justify-between">';
-                        echo '<div>';
-                        echo '<a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">';
-                        echo 'More details';
-                        echo '<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">';
-                        echo '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>';
-                        echo '</a>';
-                        echo '</svg>';
-                        echo '</div>';
-                        echo '<div class = "flex flex-col items-center">';
-                        echo "<p class = 'text-gray-500'>$projectsDateStart</p>";
-                        echo "<p class = 'text-gray-500'>$projectsDateEnd</p>";
-                        if ($projectsStatus == 'Active') {
-                            echo '<p class = "text-green-500">Active</p>';
-                        }
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
                     }
-                ?>
+                    ?>
             </main>
 
             <main class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "MembersTable">
                 <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Members</h1>
-                <div class="w-full h-48 col-span-1 md:col-span-2 lg:col-span-5 bg-white border border-gray-200 rounded-lg shadow sticky top-0 bottom-32" style = "background-image: url('./img/classroom.jpg'); background-position-x: center; background-position-y: 20%; background-repeat: no-repeat;">
-                    <div class = "w-full h-fit bg-gray-800 py-2 rounded-t">
-                        <p class = "text-white text-center">NightCrawlers</p>
-                    </div>
-                </div>
+                <?php
+                    include 'connection.php';
+                    $equipeID = $_SESSION['equipeID'];
+                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
+                    
+                    $result = $conn->query($sql);
 
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
+                    while ($row = $result->fetch_assoc()) {
+                        $teamImg = $row['image'];
+                        $teamName = $row['teamName'];
+                        $scrumMasterID = $row['scrumMasterID'];
+                        $teamId = $row['id'];
 
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
+                        echo '
+                            <div class="w-full h-48 col-span-1 md:col-span-2 lg:col-span-5 bg-white border border-gray-200 rounded-lg shadow sticky top-0" style = "background-image: url(' . $teamImg . '); background-position-x: center; background-position-y: 20%; background-repeat: no-repeat; background-size: cover;">
+                                <div class = "w-full h-fit bg-gray-800 py-2 rounded-t">
+                                    <p class = "text-white text-center">' . $teamName . '</p>
+                                </div>
+                            </div>';
 
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
+                        $MembersQuery = "SELECT * FROM users WHERE equipeID = $teamId";
+                        $MembersResult = $conn->query($MembersQuery);
 
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
+                        while ($MembersData = $MembersResult->fetch_assoc()) {
+                            if ($MembersResult->num_rows > 0) {
+                                $MembersFirstName = $MembersData['firstName'];
+                                $MembersLastName = $MembersData['lastName'];
+                                $MembersImg = $MembersData['image'];
+                                if ($MembersData['role'] == 'user') {
+                                    $MembersRole = "User";
+                                    $MembersIcon = "fa-solid fa-user mr-2";
+                                    $MembersColor = "gray";
+                                } else if ($MembersData['role'] == 'scrumMaster') {
+                                    $MembersRole = "Scrum Master";
+                                    $MembersIcon = "fa-solid fa-user-pen pr-2";
+                                    $MembersColor = "green";
+                                } else if ($MembersData['role'] == 'prodOwner') {
+                                    $MembersRole = "Product Owner";
+                                    $MembersIcon = "fa-solid fa-user-gear pr-2";
+                                    $MembersColor = "red";
+                                }
+                            } else {
+                                // Handle the case where the scrum master is not found
+                                $MembersFirstName = 'N/A';
+                                $MembersLastName = 'N/A';
+                            }
+                            echo '
+                                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
+                                    <div class="flex flex-col items-center pb-2">
+                                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
+                                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>' . $teamName . '</p>
+                                            <img src="' . $teamImg . '" alt="" class = "rounded-full h-1/6 w-1/6">
+                                        </div>
+                                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="' . $MembersImg . '" alt="' . $MembersFirstName . ' ' . $MembersLastName . '"/>
+                                        <h5 class="mb-1 text-xl font-medium text-'. $MembersColor .'-900">' . $MembersFirstName . ' ' . $MembersLastName . '</h5>
+                                        <span class="text-sm text-'. $MembersColor .'-500"><i class="'. $MembersIcon .'"></i>'. $MembersRole .'</span>
+                                    </div>
+                                    <div class="flex pb-2 justify-center">
+                                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
+                                    </div>
+                                </div>
+                                ';
+                        }
+                    }
 
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-gray-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>NightCrawlers</p>
-                            <img src="./img/classroom.jpg" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full h-48 col-span-1 md:col-span-2 lg:col-span-5 bg-white border border-gray-200 rounded-lg shadow sticky top-0" style = "background-image: url('./img/classroom2.png'); background-position-x: center; background-position-y: 20%; background-repeat: no-repeat;">
-                    <div class = "w-full h-fit bg-orange-800 py-2 rounded-t">
-                        <p class = "text-white text-center">Coders Strike</p>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow">
-                    <div class="flex flex-col items-center pb-2">
-                        <div class = "flex flex-row justify-between px-2 py-2 mb-2 bg-orange-800 rounded-t border border-gray-100">
-                            <p class = "text-white font-bold"><i class="fa-solid fa-flag mr-2"></i>Coders Strike</p>
-                            <img src="./img/classroom2.png" alt="" class = "rounded-full h-1/6 w-1/6">
-                        </div>
-                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="./img/abdellah.png" alt="Bonnie image"/>
-                        <h5 class="mb-1 text-xl font-medium text-gray-900">Abdellah Talemsi</h5>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-user mr-2"></i>User</span>
-                    </div>
-                    <div class="flex pb-2 justify-center">
-                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
-                    </div>
-                </div>
+                ?>
 
             </main>
         </div>
