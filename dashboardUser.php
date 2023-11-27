@@ -311,6 +311,7 @@ if (isset($_SESSION['email'])) {
                             $projectsProd = $projectsData['productOwnerID'];
                             $projectsDateStart = $projectsData['date_start'];
                             $projectsDateEnd = $projectsData['date_end'];
+                            $projectsStatus = $projectsData['statut'];
                         } else {
                             // Handle the case where the scrum master is not found
                         }
@@ -366,9 +367,12 @@ if (isset($_SESSION['email'])) {
                         echo '</a>';
                         echo '</svg>';
                         echo '</div>';
-                        echo '<div class = "flex flex-col">';
+                        echo '<div class = "flex flex-col items-center">';
                         echo "<p class = 'text-gray-500'>$projectsDateStart</p>";
                         echo "<p class = 'text-gray-500'>$projectsDateEnd</p>";
+                        if ($projectsStatus == 'Active') {
+                            echo '<p class = "text-green-500">Active</p>';
+                        }
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';

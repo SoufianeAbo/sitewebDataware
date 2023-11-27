@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        
+
         // Verify the hashed password
         if ($password === $row['pass']) {
             // Start a session and store user information
@@ -47,8 +47,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['equipeID'] = $row['equipeID'];
             
             // Redirect to the dashboard page
-            header("Location: dashboardUser.php");
-            exit();
+            if ($_SESSION['role'] == 'user') {
+                header("Location: dashboardUser.php");
+                exit();
+            } else if ($_SESSION['role'] == 'scrumMaster') {
+                header("Location: dashboardScrum.php");
+                exit();
+            }
         } else {
             echo "<p class = 'text-red-300'>Invalid username or password.</p>";
         }
