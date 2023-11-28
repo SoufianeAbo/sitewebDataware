@@ -113,7 +113,6 @@ if (isset($_SESSION['email'])) {
             }
         }
     </script>
-    <script src="./js/dashboard.js" defer></script>
 </head>
 
 <!DOCTYPE html>
@@ -451,15 +450,123 @@ if (isset($_SESSION['email'])) {
                                         <span class="text-sm text-'. $MembersColor .'-500"><i class="'. $MembersIcon .'"></i>'. $MembersRole .'</span>
                                     </div>
                                     <div class="flex pb-2 justify-center">
-                                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">View details</a>
+                                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300">Remove</a>
                                     </div>
                                 </div>
                                 ';
                         }
+
+                        echo '
+                        <a class = "p-12 bg-green-500 rounded-full w-fit text-white cursor-pointer '. $teamName .'Add" id = "addBtn" ><i class="fa-solid fa-user-plus"></i></a>
+                        ';
                     }
 
                 ?>
 
+            </main>
+
+            <main>
+            <form class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "AllMmbrsTable">
+            <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a team</h1>
+            <?php
+                include 'connection.php';
+
+                // Check if the user is logged in
+                    // User is logged in
+                    $equipeID = $_SESSION['equipeID'];
+                    $currentMemberID = $_SESSION['id'];
+                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
+                    
+                    $result = $conn->query($sql);
+
+                    while ($row = $result->fetch_assoc()) {
+                        $teamId = $row['id'];
+                        $teamImg = $row['image'];
+                        $teamDescription = $row['description'];
+                        $teamName = $row['teamName'];
+                        $projectID = $row['projectID'];
+                        $scrumMasterID = $row['scrumMasterID'];
+
+                        $scrumMasterQuery = "SELECT * FROM users WHERE id = $scrumMasterID";
+                        $scrumMasterResult = $conn->query($scrumMasterQuery);
+
+                        if ($scrumMasterResult->num_rows > 0) {
+                            $scrumMasterData = $scrumMasterResult->fetch_assoc();
+                            $scrumMasterFirstName = $scrumMasterData['firstName'];
+                            $scrumMasterLastName = $scrumMasterData['lastName'];
+                            $scrumMasterImg = $scrumMasterData['image'];
+                        } else {
+                            // Handle the case where the scrum master is not found
+                            $scrumMasterFirstName = 'N/A';
+                            $scrumMasterLastName = 'N/A';
+                        }
+                        echo '<div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow teamSelect cursor-pointer transition-all h-full" data-id="'. $teamId .'">';
+                        echo '<a href="#">';
+                        echo "<img class='rounded-t-lg' src='$teamImg' alt='' />";
+                        echo '</a>';
+                        echo '<div class="p-5">';
+                        echo '<div class = "flex justify-between">';
+                        echo '<a href="#" class = "flex flex-col">';
+                        echo "<h5 class='text-2xl font-bold tracking-tight text-gray-900'>$teamName</h5>";
+                        echo "<p class = 'mb-4 text-green-900'><i class='fa-solid fa-user-pen pr-2'></i>$scrumMasterFirstName $scrumMasterLastName</p>";
+                        echo '</a>';
+                        echo '';
+                        echo "<img src='$scrumMasterImg' alt='' class = 'w-[14%] h-[14%] rounded-full border-2 border-green-700 relative'>";
+                        echo '</div>';
+                        echo "<p class='mb-3 font-normal text-gray-700'>$teamDescription</p>";
+                        echo '<div class = "flex flex-row items-center justify-between">';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                ?>  
+            <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a member</h1>
+                <?php
+                    include 'connection.php';
+                    $equipeID = $_SESSION['equipeID'];
+                    $MembersQuery = "SELECT * FROM users WHERE equipeID = 0";
+                    $MembersResult = $conn->query($MembersQuery);
+
+                    while ($MembersData = $MembersResult->fetch_assoc()) {
+                        if ($MembersResult->num_rows > 0) {
+                            $MembersFirstName = $MembersData['firstName'];
+                            $MembersLastName = $MembersData['lastName'];
+                            $MembersImg = $MembersData['image'];
+                            if ($MembersData['role'] == 'user') {
+                                $MembersRole = "User";
+                                $MembersIcon = "fa-solid fa-user mr-2";
+                                $MembersColor = "gray";
+                            } else if ($MembersData['role'] == 'scrumMaster') {
+                                $MembersRole = "Scrum Master";
+                                $MembersIcon = "fa-solid fa-user-pen pr-2";
+                                $MembersColor = "green";
+                            } else if ($MembersData['role'] == 'prodOwner') {
+                                $MembersRole = "Product Owner";
+                                $MembersIcon = "fa-solid fa-user-gear pr-2";
+                                $MembersColor = "red";
+                            }
+                        } else {
+                            // Handle the case where the scrum master is not found
+                            $MembersFirstName = 'N/A';
+                            $MembersLastName = 'N/A';
+                        }
+                        echo '
+                            <div class="w-full max-w-sm bg-white border border-gray-100 rounded-lg shadow memberSelect cursor-pointer transition-all" data-id="'. $MembersData['id'] .'">
+                                <div class="flex flex-col items-center py-2">
+                                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="' . $MembersImg . '" alt="' . $MembersFirstName . ' ' . $MembersLastName . '"/>
+                                    <h5 class="mb-1 text-xl font-medium text-'. $MembersColor .'-900">' . $MembersFirstName . ' ' . $MembersLastName . '</h5>
+                                    <span class="text-sm text-'. $MembersColor .'-500"><i class="'. $MembersIcon .'"></i>'. $MembersRole .'</span>
+                                </div>
+                            </div>
+                            ';
+                    }
+                ?>
+                <div class = "lg:col-span-5 md:col-span-3 col-span-1">
+                <input type="hidden" name="selectedTeam" id="selectedTeam" value="">
+                <input type="hidden" name="selectedMember" id="selectedMember" value="">
+                <input type="submit" value="Add Member" class="bg-gray-500 p-4 rounded text-white transition-all" disabled id = "submitBtn">
+                </div>
+                </form>
             </main>
         </div>
         

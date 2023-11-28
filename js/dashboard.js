@@ -1,21 +1,3 @@
-// const mobileDash = document.getElementById("mobileDash");
-// const mobileNav = document.getElementById("mobileNav");
-
-// mobileNav.addEventListener("click", () => {
-//     mobileDash.classList.remove("hidden");
-//     mobileDash.classList.add("animate-slide-in-right");
-//     mobileDash.classList.remove("animate-slide-out-right");
-// });
-
-// document.addEventListener("click", navbar);
-
-// function navbar(event) {
-//     if (event.target !== mobileNav && event.target !== mobileNav) {
-//         mobileDash.classList.remove("animate-slide-in-right");
-//         mobileDash.classList.add("animate-slide-out-right");
-//     }
-// }
-
 const projectsBtn = document.getElementById("ProjectsBtn");
 const projectsBtn2 = document.getElementById("ProjectsBtn2");
 const projectsTable = document.getElementById("ProjectsTable");
