@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtRole->close();
 
             // Check if the user is a scrum master
-            if ($userRole !== 'scrumMaster') {
+            if ($userRole !== 'scrumMaster' && $userRole !== 'prodOwner') {
                 // Update the user's equipeID to 0
                 $updateQuery = "UPDATE users SET equipeID = 0 WHERE id = ?";
                 $stmt = $conn->prepare($updateQuery);
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 // Handle the case where the user is a scrum master
-                echo "Scrum masters cannot be removed.";
+                echo "Scrum masters and Product owners cannot be removed.";
                 header('Refresh: 2; URL=./dashboardScrum.php');
             }
         } else {
