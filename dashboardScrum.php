@@ -118,8 +118,8 @@ include 'userCheck.php';
             <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
                 <i class="fas fa-plus mr-3"></i> New Report
             </button> -->
-            <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-                <i class="fa-solid fa-users-gear mr-3"></i> Add team
+            <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center" id = "addTeamBtn">
+                <i class="fa-solid fa-users-gear mr-3"></i> Create team
             </button>
         </div>
         <nav class="text-white text-base font-semibold pt-3">
@@ -541,6 +541,44 @@ include 'userCheck.php';
                 <input type="hidden" name="selectedMember" id="selectedMember" value="">
                 <input type="submit" value="Add Member" class="bg-gray-500 p-4 rounded text-white transition-all" disabled id = "submitBtn">
                 </div>
+                </form>
+            </main>
+
+            <main>
+                <form action = "createTeam.php" method = "POST" class="w-full flex justify-center items-center hidden flex-col" enctype="multipart/form-data" id = "createTeam">
+                    <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5 py-8">Create team</h1>
+
+                    <div class = "grid grid-rows-2 grid-cols-2 w-4/6 gap-24">
+                        <div class = "row-span-2 w-full">
+                            <div class = "flex flex-col justify-center items-center w-full gap-5">
+                                <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
+                                    <label for="formName">Team Name</label>
+                                    <input class = "border border-gray-200 bg-gray-100 p-4 my-4" name = "formName" type="text" placeholder = "NightCrawlers" required>
+                                </div>
+
+                                <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
+                                    <label for="formDescription">Team Description</label>
+                                    <textarea class = "border border-gray-200 bg-gray-100 resize-none p-4 my-4" name="formDescription" placeholder = "Lorem ipsum..." cols="30" rows="5" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-center w-full">
+                                <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500">PNG or JPG (MIN. 1152x768px)</p>
+                                    </div>
+                                    <input id="dropzone-file" name="teamImage" type="file" class="hidden" accept="image/jpeg, image/png" required />
+                                </label>
+                            </div> 
+                        </div>
+                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded h-1/6 w-full"><i class="fa-solid fa-users-gear mr-3"></i>Create Team</button>
+                    </div>
                 </form>
             </main>
         </div>
