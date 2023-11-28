@@ -11,7 +11,7 @@ const membersTable = document.getElementById("MembersTable");
 
 const bigMmbrsTable = document.getElementById("AllMmbrsTable");
 
-const addBtn = document.getElementById("addBtn");
+const addBtn = document.querySelectorAll(".addBtn");
 
 function toggleProjects() {
     projectsBtn.className = "flex items-center active-nav-link text-white py-4 pl-6 nav-item cursor-pointer";
@@ -65,20 +65,23 @@ teamsBtn2.addEventListener("click", toggleTeams);
 
 membersBtn.addEventListener("click", toggleMembers);
 
-addBtn.addEventListener("click", () => {
-    console.log("hellloooo");
-    teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
-    teamsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
 
-    membersBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
-
-    projectsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
-    projectsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
-
-    bigMmbrsTable.classList.remove("hidden");
-    projectsTable.classList.add("hidden");
-    teamsTable.classList.add("hidden");
-    membersTable.classList.add("hidden");
+addBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        console.log("hellloooo");
+        teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
+        teamsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
+    
+        membersBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
+    
+        projectsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
+        projectsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
+    
+        bigMmbrsTable.classList.remove("hidden");
+        projectsTable.classList.add("hidden");
+        teamsTable.classList.add("hidden");
+        membersTable.classList.add("hidden");
+    })
 });
 
 document.addEventListener('DOMContentLoaded', function () {

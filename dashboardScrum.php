@@ -2,35 +2,7 @@
 session_start();
 
 include 'connection.php';
-
-if (isset($_SESSION['email'])) {
-    $oldEmail = $_SESSION['email'];
-
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $oldEmail);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    $row = $result->fetch_assoc();
-    $_SESSION['id'] = $row['id'];
-    $_SESSION['image'] = $row['image'];
-    $_SESSION['firstName'] = $row['firstName'];
-    $_SESSION['lastName'] = $row['lastName'];
-    $_SESSION['email'] = $row['email'];
-    $_SESSION['phoneNum'] = $row['phoneNum'];
-    $_SESSION['role'] = $row['role'];
-    $_SESSION['equipeID'] = $row['equipeID'];
-
-    if ($_SESSION['role'] !== 'scrumMaster') {
-        header("Location: login.php");
-        exit();
-    }
-    // Your code here for the case when 'email' session variable exists
-} else {
-    // Your code here for the case when 'email' session variable does not exist
-    header("Location: login.php");
-    exit();
-}
+include 'userCheck.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -450,14 +422,17 @@ if (isset($_SESSION['email'])) {
                                         <span class="text-sm text-'. $MembersColor .'-500"><i class="'. $MembersIcon .'"></i>'. $MembersRole .'</span>
                                     </div>
                                     <div class="flex pb-2 justify-center">
-                                        <a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300">Remove</a>
+                                    <form method = "POST" action = "remove.php">
+                                        <input type="hidden" name="userID" value="'. $MembersData['id'] .'">
+                                        <input type="submit" value = "Remove" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300" id = "removeBtn">
+                                    </form>
                                     </div>
                                 </div>
                                 ';
                         }
 
                         echo '
-                        <a class = "p-12 bg-green-500 rounded-full w-fit text-white cursor-pointer '. $teamName .'Add" id = "addBtn" ><i class="fa-solid fa-user-plus"></i></a>
+                        <a class = "p-12 bg-green-500 rounded-full w-fit text-white cursor-pointer addBtn '. $teamName .'Add"><i class="fa-solid fa-user-plus"></i></a>
                         ';
                     }
 
@@ -466,7 +441,7 @@ if (isset($_SESSION['email'])) {
             </main>
 
             <main>
-            <form class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "AllMmbrsTable">
+            <form action = "add.php" method = "POST" class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "AllMmbrsTable">
             <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a team</h1>
             <?php
                 include 'connection.php';
