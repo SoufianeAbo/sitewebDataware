@@ -15,6 +15,8 @@ const addBtn = document.querySelectorAll(".addBtn");
 const addTeamBtn = document.getElementById("addTeamBtn");
 const createTeam = document.getElementById("createTeam");
 
+const modifyBtn = document.querySelectorAll(".modifyBtn");
+
 function toggleProjects() {
     projectsBtn.className = "flex items-center active-nav-link text-white py-4 pl-6 nav-item cursor-pointer";
     teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
@@ -63,7 +65,7 @@ function toggleMembers() {
     createTeam.classList.add("hidden");
 }
 
-function toggleCreateTeams() {
+function toggleCreateTeams(event) {
     teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
     teamsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
 
@@ -76,7 +78,19 @@ function toggleCreateTeams() {
     teamsTable.classList.add("hidden");
     membersTable.classList.add("hidden");
     bigMmbrsTable.classList.add("hidden");
-    createTeam.classList.remove("hidden");    
+    createTeam.classList.remove("hidden"); 
+    
+    if (event.target.id === "addTeamBtn") {
+        // If addTeamBtn was clicked, set the form action for creating a team
+        document.getElementById("createTeam").action = "createTeam.php";
+    } else if (event.target.classList.contains("modifyBtn")) {
+        // If modifyBtn was clicked, set the form action for modifying a team
+        document.getElementById("createTeam").action = "modifyTeam.php"; // Change this to the appropriate PHP file
+        const modifyID = this.getAttribute('data-id');
+        const selectedModifyInput = document.getElementById('selectedModify');
+        selectedModifyInput.value = modifyID;
+        console.log("value is" + selectedModifyInput.value);
+    }
 }
 
 projectsBtn.addEventListener("click", toggleProjects);
@@ -86,6 +100,10 @@ teamsBtn2.addEventListener("click", toggleTeams);
 
 membersBtn.addEventListener("click", toggleMembers);
 addTeamBtn.addEventListener("click", toggleCreateTeams);
+
+modifyBtn.forEach((btn) => {
+    btn.addEventListener("click", toggleCreateTeams);
+});
 
 addBtn.forEach((btn) => {
     btn.addEventListener("click", () => {

@@ -5,6 +5,7 @@ include 'connection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formName = $_POST['formName'];
     $formDescription = $_POST['formDescription'];
+    $selectedModify = $_POST['selectedModify'];
 
     // File upload
     $uploadDir = './img/';
@@ -31,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtProjectID->fetch();
             $stmtProjectID->close();
 
-            // Perform database operations
-            $insertSql = "INSERT INTO teams (image, description, teamName, projectID, scrumMasterID) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($insertSql);
-            $stmt->bind_param("sssss", $uploadPath, $formDescription, $formName, $projectID, $scrumMasterID);
+            // Perform database operations  
+            $updateSql = "UPDATE teams SET image=?, description=?, teamName=? WHERE id=?";
+            $stmt = $conn->prepare($updateSql);
+            $stmt->bind_param("ssss", $uploadPath, $formDescription, $formName, $selectedModify);
             $stmt->execute();
             $stmt->close();
 
