@@ -237,18 +237,18 @@ include 'userCheck.php';
                         echo '<div class="p-5">';
                         echo '<div class = "flex justify-between">';
                         echo '<a href="#" class = "flex flex-col">';
-                        echo "<h5 class='text-2xl font-bold tracking-tight text-gray-900'>$teamName</h5>";
+                        echo "<h5 class='text-2xl font-bold tracking-tight text-gray-900' class = 'teamNameHTML' data-id = '$teamName'>$teamName</h5>";
                         echo "<p class = 'mb-4 text-green-900'><i class='fa-solid fa-user-pen pr-2'></i>$scrumMasterFirstName $scrumMasterLastName</p>";
                         echo '</a>';
                         echo '';
                         echo "<img src='$scrumMasterImg' alt='' class = 'w-[14%] h-[14%] rounded-full border-2 border-green-700 relative'>";
                         echo '</div>';
-                        echo "<p class='mb-3 font-normal text-gray-700'>$teamDescription</p>";
+                        echo "<p class='mb-3 font-normal text-gray-700' class = 'teamDescHTML' data-id = '$teamDescription'>$teamDescription</p>";
                         echo '<div class = "flex flex-row items-center justify-between">';
                         echo '<a href="#" class="inline-flex items-center px-8 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 modifyBtn" data-id="'. $row['id'] .'">';
                         echo '<i class="fa-solid fa-gear mr-2"></i>Modify' ;
                         echo '</a>';
-                        echo '<a href="#" class="inline-flex items-center px-8 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300">';
+                        echo '<a href="removeTeam.php?id='. $row['id'] .'" class="inline-flex items-center px-8 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300">';
                         echo '<i class="fa-solid fa-trash mr-2"></i>Remove';
                         echo '</a>';
                         echo '</div>';
@@ -542,19 +542,19 @@ include 'userCheck.php';
 
             <main>
                 <form action = "createTeam.php" method = "POST" class="w-full flex justify-center items-center hidden flex-col" enctype="multipart/form-data" id = "createTeam">
-                    <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5 py-8">Create team</h1>
+                    <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5 py-8" id = "teamHeader">Create team</h1>
 
                     <div class = "grid grid-rows-2 grid-cols-2 w-4/6 gap-24">
                         <div class = "row-span-2 w-full">
                             <div class = "flex flex-col justify-center items-center w-full gap-5">
                                 <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
                                     <label for="formName">Team Name</label>
-                                    <input class = "border border-gray-200 bg-gray-100 p-4 my-4" name = "formName" type="text" placeholder = "NightCrawlers" required>
+                                    <input id = "teamNameHeader" class = "border border-gray-200 bg-gray-100 p-4 my-4" name = "formName" type="text" placeholder = "NightCrawlers" required>
                                 </div>
 
                                 <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
                                     <label for="formDescription">Team Description</label>
-                                    <textarea class = "border border-gray-200 bg-gray-100 resize-none p-4 my-4" name="formDescription" placeholder = "Lorem ipsum..." cols="30" rows="5" required></textarea>
+                                    <textarea id = "teamDescHeader" class = "border border-gray-200 bg-gray-100 resize-none p-4 my-4" name="formDescription" placeholder = "Lorem ipsum..." cols="30" rows="5" required></textarea>
                                 </div>
                             </div>
                         </div>
@@ -574,7 +574,7 @@ include 'userCheck.php';
                             </div> 
                         </div>
                         <input type="hidden" name="selectedModify" id="selectedModify" value="">
-                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded h-1/6 w-full"><i class="fa-solid fa-users-gear mr-3"></i>Create Team</button>
+                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded h-1/6 w-full" id = "modifyBtnHeader"><i class="fa-solid fa-users-gear mr-3"></i>Create Team</button>
                     </div>
                 </form>
             </main>
