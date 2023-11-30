@@ -53,6 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else if ($_SESSION['role'] == 'scrumMaster') {
                 header("Location: dashboardScrum.php");
                 exit();
+            } else if ($_SESSION['role'] == 'prodOwner') {
+                header("Location: dashboardProd.php");
+                exit();
             }
         } else {
             echo "<p class = 'text-red-300'>Invalid username or password.</p>";
