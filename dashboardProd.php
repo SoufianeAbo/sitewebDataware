@@ -408,6 +408,7 @@ if (isset($_SESSION['email'])) {
                             if ($MembersResult->num_rows > 0) {
                                 $MembersFirstName = $MembersData['firstName'];
                                 $MembersLastName = $MembersData['lastName'];
+                                $MembersID = $MembersData['id'];
                                 $MembersImg = $MembersData['image'];
                                 if ($MembersData['role'] == 'user') {
                                     $MembersRole = "User";
@@ -437,7 +438,8 @@ if (isset($_SESSION['email'])) {
                             echo '        <h5 class="mb-1 text-xl font-medium text-' . $MembersColor . '-900">' . $MembersFirstName . ' ' . $MembersLastName . '</h5>';
                             echo '        <span class="text-sm text-' . $MembersColor . '-500"><i class="' . $MembersIcon . '"></i>' . $MembersRole . '</span>';
                             echo '        <form method="POST" action="changeUser.php" class = "mt-2">';
-                            echo '            <select id="dropdownRole" name="dropdownRole" class = "border-blue-500 border-2 p-2 rounded" onchange="submitForm()">';
+                            echo '            <input type="hidden" name="userId" value='. $MembersID .'>';
+                            echo '            <select id="dropdownRole" name="dropdownRole" class = "border-blue-500 border-2 p-2 rounded" onchange="this.form.submit()">';
                             echo '                <option value="scrumMaster" disabled selected>' . $MembersRole . '</option>';
                                     if ($MembersRole === "User") {
                                         echo '                <option value="scrumMaster">Scrum Master</option>';
