@@ -320,8 +320,8 @@ if (isset($_SESSION['email'])) {
                                     $scrumMasterImg = $scrumMasterData['image'];
                                 } else {
                                     // Handle the case where the scrum master is not found
-                                    $scrumMasterFirstName = 'N/A';
-                                    $scrumMasterLastName = 'N/A';
+                                    $scrumMasterFirstName = 'No current';
+                                    $scrumMasterLastName = 'scrum master.';
                                 }
 
                                 $prodMasterQuery = "SELECT * FROM users WHERE id = $projectsProd";
@@ -368,6 +368,7 @@ if (isset($_SESSION['email'])) {
                                 if ($projectsStatus == 'Active') {
                                     echo '<p class="text-green-500">Active</p>';
                                 }
+                                echo '</div>';
                                 echo '</div>';
                                 echo '</div>';
                                 echo '</div>';
@@ -627,7 +628,7 @@ if (isset($_SESSION['email'])) {
 
                                 <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
                                     <label for="formName">Project Deadline</label>
-                                    <input id = "teamNameHeader" class = "border border-gray-200 bg-gray-100 p-4 my-4" name = "formName" type="text" placeholder = "NightCrawlers" required>
+                                    <input id = "teamNameHeader" class = "border border-gray-200 bg-gray-100 p-4 my-4" name = "formDate" type="text" placeholder = "2023-12-06" required>
                                 </div>
                             </div>
                         </div>
@@ -647,7 +648,7 @@ if (isset($_SESSION['email'])) {
                             </div> 
                         </div>
                         <input type="hidden" name="selectedModify" id="selectedModify" value="">
-                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded h-1/6 w-full" id = "modifyBtnHeader"><i class="fa-solid fa-users-gear mr-3"></i>Create Team</button>
+                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded h-1/6 w-full" id = "modifyBtnHeader"><i class="fa-solid fa-users-gear mr-3"></i>Create Project</button>
                     </div>
                 </form>
             </main>

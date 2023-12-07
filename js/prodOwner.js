@@ -65,7 +65,7 @@ function toggleMembers() {
     createTeam.classList.add("hidden");
 }
 
-function toggleCreateTeams(event) {
+function toggleCreateTeams() {
     teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
     teamsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
 
@@ -79,37 +79,6 @@ function toggleCreateTeams(event) {
     membersTable.classList.add("hidden");
     bigMmbrsTable.classList.add("hidden");
     createTeam.classList.remove("hidden"); 
-    const teamHeader = document.getElementById("teamHeader");
-    const modifyBtnHeader = document.getElementById("modifyBtnHeader");
-    // const teamNameHeader = document.getElementById("teamNameHeader");
-    // const teamDescHeader = document.getElementById("teamDescHeader");
-    
-    if (event.target.id === "addTeamBtn") {
-        // If addTeamBtn was clicked, set the form action for creating a team
-        document.getElementById("createTeam").action = "createTeam.php";
-        teamHeader.innerHTML = "Create team";
-        modifyBtnHeader.innerHTML = "<i class='fa-solid fa-users-gear mr-3'></i>Create team";
-        // teamNameHeader.value = '';
-        // teamDescHeader.innerHTML = '';
-
-    } else if (event.target.classList.contains("modifyBtn")) {
-        // If modifyBtn was clicked, set the form action for modifying a team
-        document.getElementById("createTeam").action = "modifyTeam.php"; // Change this to the appropriate PHP file
-        const modifyID = this.getAttribute('data-id');
-        const selectedModifyInput = document.getElementById('selectedModify');
-
-        teamHeader.innerHTML = "Modify team";
-        modifyBtnHeader.innerHTML = "<i class='fa-solid fa-users-gear mr-3'></i>Modify team";
-
-        // teamNameHeader.value = '';
-        // teamDescHeader.innerHTML = '';
-
-        // teamNameHeader.value = document.querySelectorAll("teamNameHTML").getAttribute('data-id');
-        // teamDescHeader.innerHTML = document.querySelectorAll("teamDescHTML").getAttribute('data-id');
-
-        selectedModifyInput.value = modifyID;
-        console.log("value is" + selectedModifyInput.value);
-    }
 }
 
 projectsBtn.addEventListener("click", toggleProjects);
