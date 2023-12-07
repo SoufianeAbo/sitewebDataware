@@ -206,7 +206,7 @@ include 'userCheck.php';
                     // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $currentMemberID = $_SESSION['id'];
-                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
+                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID OR id = $equipeID";
                     
                     $result = $conn->query($sql);
 
@@ -363,7 +363,7 @@ include 'userCheck.php';
                 <?php
                     include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
-                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
+                    $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID OR id = $equipeID";
                     
                     $result = $conn->query($sql);
 

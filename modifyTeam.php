@@ -32,10 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtProjectID->fetch();
             $stmtProjectID->close();
 
+            $scrumMasterID = $_SESSION['id'];
             // Perform database operations  
-            $updateSql = "UPDATE teams SET image=?, description=?, teamName=? WHERE id=?";
+            $updateSql = "UPDATE teams SET image=?, description=?, teamName=? WHERE id=? AND scrumMasterID = ?";
             $stmt = $conn->prepare($updateSql);
-            $stmt->bind_param("ssss", $uploadPath, $formDescription, $formName, $selectedModify);
+            $stmt->bind_param("ssssi", $uploadPath, $formDescription, $formName, $selectedModify, $scrumMasterID);
             $stmt->execute();
             $stmt->close();
 

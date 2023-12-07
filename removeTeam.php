@@ -6,6 +6,7 @@ include 'connection.php';
 if (isset($_GET['id'])) {
     // Retrieve the value of the "id" parameter
     $teamId = $_GET['id'];
+    $currentMemberID = $_SESSION['id'];
 
     // Use $teamId as needed, for example, in your SQL query or any other processing
     echo "Team ID: " . $teamId;
@@ -26,11 +27,11 @@ if (isset($_GET['id'])) {
             echo "Cannot delete the team. There are users in the team.";
         } else {
             // No users in the team, proceed with team deletion
-            $sqlDeleteTeam = "DELETE FROM teams WHERE id = ?";
+            $sqlDeleteTeam = "DELETE FROM teams WHERE id = ? AND scrumMasterID = ?";
             $stmtDeleteTeam = $conn->prepare($sqlDeleteTeam);
 
             if ($stmtDeleteTeam) {
-                $stmtDeleteTeam->bind_param("i", $teamId);
+                $stmtDeleteTeam->bind_param("ii", $teamId, $currentMemberID);
                 $stmtDeleteTeam->execute();
 
                 // Check if deletion was successful
