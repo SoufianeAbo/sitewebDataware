@@ -19,53 +19,50 @@
                 <input type="submit" value="Submit" class = "bg-blue-500 rounded p-2 text-white hover:bg-orange-500 transition-all cursor-pointer">
             </form>
             <?php
-session_start();
-include 'connection.php';
+                session_start();
+                include 'connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["emailLog"];
-    $password = $_POST["passwordLog"];
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $email = $_POST["emailLog"];
+                    $password = $_POST["passwordLog"];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+                    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
 
-        // Verify the hashed password
-        if ($password === $row['pass']) {
-            // Start a session and store user information
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['image'] = $row['image'];
-            $_SESSION['firstName'] = $row['firstName'];
-            $_SESSION['lastName'] = $row['lastName'];
-            $_SESSION['email'] = $row['email'];
-            $_SESSION['phoneNum'] = $row['phoneNum'];
-            $_SESSION['role'] = $row['role'];
-            $_SESSION['equipeID'] = $row['equipeID'];
-            
-            // Redirect to the dashboard page
-            if ($_SESSION['role'] == 'user') {
-                header("Location: dashboardUser.php");
-                exit();
-            } else if ($_SESSION['role'] == 'scrumMaster') {
-                header("Location: dashboardScrum.php");
-                exit();
-            } else if ($_SESSION['role'] == 'prodOwner') {
-                header("Location: dashboardProd.php");
-                exit();
-            }
-        } else {
-            echo "<p class = 'text-red-300'>Invalid username or password.</p>";
-        }
-    } else {
-        echo "<p class = 'text-red-300'>Invalid username or password.</p>";
-    }
-}
+                        if ($password === $row['pass']) {
+                            $_SESSION['id'] = $row['id'];
+                            $_SESSION['image'] = $row['image'];
+                            $_SESSION['firstName'] = $row['firstName'];
+                            $_SESSION['lastName'] = $row['lastName'];
+                            $_SESSION['email'] = $row['email'];
+                            $_SESSION['phoneNum'] = $row['phoneNum'];
+                            $_SESSION['role'] = $row['role'];
+                            $_SESSION['equipeID'] = $row['equipeID'];
+                            
+                            if ($_SESSION['role'] == 'user') {
+                                header("Location: dashboardUser.php");
+                                exit();
+                            } else if ($_SESSION['role'] == 'scrumMaster') {
+                                header("Location: dashboardScrum.php");
+                                exit();
+                            } else if ($_SESSION['role'] == 'prodOwner') {
+                                header("Location: dashboardProd.php");
+                                exit();
+                            }
+                        } else {
+                            echo "<p class = 'text-red-300'>Invalid username or password.</p>";
+                        }
+                    } else {
+                        echo "<p class = 'text-red-300'>Invalid username or password.</p>";
+                    }
+                }
 
-?>
+                ?>
     <a href = "#" class = "text-white underline" id = "registerLink">Not registered? Click here to register</a>
         </div>
 
