@@ -7,20 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formDescription = $_POST['formDescription'];
     $selectedModify = $_POST['selectedModify'];
 
-    // File upload
     $uploadDir = './img/';
     $teamImage = $_FILES['teamImage'];
 
     $uploadPath = $uploadDir . basename($teamImage['name']);
 
-    // Check file size and type
     if ($teamImage['size'] > 0 && $teamImage['size'] <= 10 * 1024 * 1024 && ($teamImage['type'] === 'image/jpeg' || $teamImage['type'] === 'image/png')) {
-        // Check image dimensions (minimum 1152x768 pixels)
         list($width, $height) = getimagesize($teamImage['tmp_name']);
         if ($width >= 1152 && $height >= 768) {
             move_uploaded_file($teamImage['tmp_name'], $uploadPath);
 
-            // Get projectID based on scrumMasterID from the projects table
             $scrumMasterID = $_SESSION['id'];
             $projectIDQuery = "SELECT id FROM projects WHERE scrumMasterID = ?";
             $stmtProjectID = $conn->prepare($projectIDQuery);
@@ -33,14 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtProjectID->close();
 
             $scrumMasterID = $_SESSION['id'];
-            // Perform database operations  
             $updateSql = "UPDATE teams SET image=?, description=?, teamName=? WHERE id=? AND scrumMasterID = ?";
             $stmt = $conn->prepare($updateSql);
             $stmt->bind_param("ssssi", $uploadPath, $formDescription, $formName, $selectedModify, $scrumMasterID);
             $stmt->execute();
             $stmt->close();
 
-            // Redirect to the original page or display a success message
             header('Location: dashboardScrum.php');
             exit;
         } else {

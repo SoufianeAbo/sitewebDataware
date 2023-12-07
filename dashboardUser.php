@@ -25,9 +25,7 @@ if (isset($_SESSION['email'])) {
         header("Location: login.php");
         exit();
     }
-    // Your code here for the case when 'email' session variable exists
 } else {
-    // Your code here for the case when 'email' session variable does not exist
     header("Location: login.php");
     exit();
 }
@@ -113,18 +111,6 @@ if (isset($_SESSION['email'])) {
             }
         }
     </script>
-</head>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tailwind Admin Template</title>
-    <meta name="author" content="David Grzyb">
-    <meta name="description" content="">
-
-    <!-- Tailwind -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
@@ -138,14 +124,12 @@ if (isset($_SESSION['email'])) {
         .account-link:hover { background: #3d68ff; }
     </style>
 </head>
+
 <body class="bg-gray-100 font-family-karla flex">
 
     <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
         <div class="p-6">
             <a class="text-white text-3xl font-semibold uppercase hover:text-gray-300"><img src="./img/white3.png" alt=""></a>
-            <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-                <i class="fas fa-plus mr-3"></i> New Report
-            </button> -->
         </div>
         <nav class="text-white text-base font-semibold pt-3">
             <a class="flex items-center active-nav-link text-white py-4 pl-6 nav-item cursor-pointer" id = "TeamsBtn">
@@ -168,17 +152,12 @@ if (isset($_SESSION['email'])) {
     </aside>
 
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
-        <!-- Desktop Header -->
         <header class="w-full items-center bg-blue-950 py-2 px-6 hidden sm:flex">
             <div class="w-1/2"></div>
             <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
                 <button @click="isOpen = !isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <!-- <img src="./img/abdellah.png"> -->
                     <?php
                         include 'connection.php';
-
-                        // Check if the user is logged in
-                            // User is logged in
                             $image = $_SESSION['image'];
                             echo "<img src='$image'>";
                     ?>
@@ -191,7 +170,6 @@ if (isset($_SESSION['email'])) {
             </div>
         </header>
 
-        <!-- Mobile Header & Nav -->
         <header x-data="{ isOpen: false }" class="w-full bg-sidebar py-5 px-6 sm:hidden">
             <div class="flex items-center justify-between">
                 <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">DATAWARE</a>
@@ -201,11 +179,14 @@ if (isset($_SESSION['email'])) {
                 </button>
             </div>
 
-            <!-- Dropdown Nav -->
             <nav :class="isOpen ? 'flex': 'hidden'" class="flex flex-col pt-4">
                 <a class="flex items-center active-nav-link text-white py-2 pl-4 nav-item" id = "TeamsBtn2">
                     <i class="fa-solid fa-users mr-3"></i>
                     Teams
+                </a>
+                <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" id = "MembersBtn2">
+                    <i class="fa-solid fa-user-group mr-3"></i>
+                    Members
                 </a>
                 <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" id = "ProjectsBtn2">
                     <i class="fa-solid fa-list-check mr-3"></i>
@@ -215,9 +196,6 @@ if (isset($_SESSION['email'])) {
                     <i class="fas fa-sign-out-alt mr-3"></i> Sign Out
                 </button>
             </nav>
-            <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-                <i class="fas fa-plus mr-3"></i> New Report
-            </button> -->
         </header>
     
         <div class="w-full overflow-x-hidden border-t flex flex-col">
@@ -227,8 +205,6 @@ if (isset($_SESSION['email'])) {
                 <?php
                 include 'connection.php';
 
-                // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT * FROM teams WHERE id = $equipeID";
                     
@@ -250,7 +226,6 @@ if (isset($_SESSION['email'])) {
                             $scrumMasterLastName = $scrumMasterData['lastName'];
                             $scrumMasterImg = $scrumMasterData['image'];
                         } else {
-                            // Handle the case where the scrum master is not found
                             $scrumMasterFirstName = 'N/A';
                             $scrumMasterLastName = 'N/A';
                         }
@@ -292,8 +267,6 @@ if (isset($_SESSION['email'])) {
                 <?php
                     include 'connection.php';
 
-                    // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
 
@@ -326,7 +299,6 @@ if (isset($_SESSION['email'])) {
                                     $scrumMasterLastName = $scrumMasterData['lastName'];
                                     $scrumMasterImg = $scrumMasterData['image'];
                                 } else {
-                                    // Handle the case where the scrum master is not found
                                     $scrumMasterFirstName = 'N/A';
                                     $scrumMasterLastName = 'N/A';
                                 }
@@ -340,7 +312,6 @@ if (isset($_SESSION['email'])) {
                                     $prodMasterLastName = $prodMasterData['lastName'];
                                     $prodMasterImg = $prodMasterData['image'];
                                 } else {
-                                    // Handle the case where the scrum master is not found
                                     $prodMasterFirstName = 'N/A';
                                     $prodMasterLastName = 'N/A';
                                 }
@@ -380,7 +351,7 @@ if (isset($_SESSION['email'])) {
                                 echo '</div>';
                             }
                         } else {
-                            // Handle the case where no projects are found for the current user
+
                         }
                     }
                     ?>
@@ -430,7 +401,6 @@ if (isset($_SESSION['email'])) {
                                     $MembersColor = "red";
                                 }
                             } else {
-                                // Handle the case where the scrum master is not found
                                 $MembersFirstName = 'N/A';
                                 $MembersLastName = 'N/A';
                             }
@@ -465,8 +435,6 @@ if (isset($_SESSION['email'])) {
                 <?php
                 include 'connection.php';
 
-                // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
                     
@@ -489,7 +457,7 @@ if (isset($_SESSION['email'])) {
                             $projectsDateEnd = $projectsData['date_end'];
                             $projectsStatus = $projectsData['statut'];
                         } else {
-                            // Handle the case where the scrum master is not found
+                          
                         }
 
                         $scrumMasterQuery = "SELECT * FROM users WHERE id = $projectsScrum";
@@ -501,7 +469,6 @@ if (isset($_SESSION['email'])) {
                             $scrumMasterLastName = $scrumMasterData['lastName'];
                             $scrumMasterImg = $scrumMasterData['image'];
                         } else {
-                            // Handle the case where the scrum master is not found
                             $scrumMasterFirstName = 'N/A';
                             $scrumMasterLastName = 'N/A';
                         }
@@ -515,7 +482,6 @@ if (isset($_SESSION['email'])) {
                             $prodMasterLastName = $prodMasterData['lastName'];
                             $prodMasterImg = $prodMasterData['image'];
                         } else {
-                            // Handle the case where the scrum master is not found
                             $prodMasterFirstName = 'N/A';
                             $prodMasterLastName = 'N/A';
                         }
@@ -559,7 +525,6 @@ if (isset($_SESSION['email'])) {
         
     </div>
 
-    <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
 </body>
 </html>
