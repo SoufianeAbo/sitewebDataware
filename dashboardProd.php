@@ -368,7 +368,7 @@ if (isset($_SESSION['email'])) {
                                 echo '</div>';
                                 echo '</div>';
                                 echo '<div>';
-                                echo '<a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 addBtn">';
+                                echo '<a href="deleteProject.php?id='. $projectsData['id'] .'" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 addBtn">';
                                 echo '<i class="fa-solid fa-trash mr-2"></i>Delete';
                                 echo '</a>';
                                 echo '</div>';

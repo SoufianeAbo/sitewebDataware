@@ -5,34 +5,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $selectedTeam = $_POST['selectedTeam'];
     $selectedMember = $_POST['selectedMember'];
 
-    // Perform the update operation
-    $updateSql = "UPDATE projects SET scrumMasterID = ? WHERE id = ?";
+    // Perform the update operation for the project
+    $updateProjectSql = "UPDATE projects SET scrumMasterID = ? WHERE id = ?";
+    $stmtProject = $conn->prepare($updateProjectSql);
 
-    // Use prepared statements to prevent SQL injection
-    $stmt = $conn->prepare($updateSql);
-    
-    if ($stmt) {
-        // Bind the parameters
-        $stmt->bind_param("ii", $selectedMember, $selectedTeam);
+    if ($stmtProject) {
+        // Bind the parameters for the project update
+        $stmtProject->bind_param("ii", $selectedMember, $selectedTeam);
 
-        // Execute the statement
-        $stmt->execute();
+        // Execute the project update statement
+        $stmtProject->execute();
 
-        // Check if the update was successful
-        if ($stmt->affected_rows > 0) {
-            // Update successful
-            header('Location: dashboardProd.php');
-            exit;
+        // Check if the project update was successful
+        if ($stmtProject->affected_rows > 0) {
+            // Update successful for the project
+
+            // Now, update projectID for all teams associated with the assigned Scrum Master
+            $updateTeamsSql = "UPDATE teams SET projectID = ? WHERE scrumMasterID = ?";
+            $stmtTeams = $conn->prepare($updateTeamsSql);
+
+            if ($stmtTeams) {
+                // Bind the parameters for the teams update
+                $stmtTeams->bind_param("ii", $selectedTeam, $selectedMember);
+
+                // Execute the teams update statement
+                $stmtTeams->execute();
+
+                // Check if the teams update was successful
+                if ($stmtTeams->affected_rows > 0) {
+                    // Update successful for teams
+                    header('Location: dashboardProd.php');
+                    exit;
+                } else {
+                    // Update failed for teams
+                    echo "Error updating projectID for teams.";
+                }
+
+                // Close the teams update statement
+                $stmtTeams->close();
+            } else {
+                // Statement preparation failed for updating teams
+                echo "Error preparing SQL statement for updating teams.";
+            }
         } else {
-            // Update failed
+            // Update failed for the project
             echo "Error updating user's team ID.";
         }
 
-        // Close the statement
-        $stmt->close();
+        // Close the project update statement
+        $stmtProject->close();
     } else {
-        // Statement preparation failed
-        echo "Error preparing SQL statement.";
+        // Statement preparation failed for updating the project
+        echo "Error preparing SQL statement for updating the project.";
     }
 }
 ?>
