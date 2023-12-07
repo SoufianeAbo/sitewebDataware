@@ -7,20 +7,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formDescription = $_POST['formDescription'];
     $formDate = $_POST['formDate'];
 
-    // File upload
     $uploadDir = './img/';
     $teamImage = $_FILES['teamImage'];
 
     $uploadPath = $uploadDir . basename($teamImage['name']);
 
-    // Check file size and type
     if ($teamImage['size'] > 0 && $teamImage['size'] <= 10 * 1024 * 1024 && ($teamImage['type'] === 'image/jpeg' || $teamImage['type'] === 'image/png')) {
-        // Check image dimensions (minimum 1152x768 pixels)
+
         list($width, $height) = getimagesize($teamImage['tmp_name']);
         if ($width >= 1152 && $height >= 768) {
             move_uploaded_file($teamImage['tmp_name'], $uploadPath);
 
-            // Get projectID based on scrumMasterID from the projects table
             $scrumMasterID = $_SESSION['id'];
             $projectIDQuery = "SELECT id FROM projects WHERE scrumMasterID = ?";
             $stmtProjectID = $conn->prepare($projectIDQuery);
@@ -34,14 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentMemberID = $_SESSION['id'];
 
             $statut = 'Active';
-            // Perform database operations
             $insertSql = "INSERT INTO projects (image, name, description, scrumMasterID, productOwnerID, date_start, date_end, statut) VALUES (?, ?, ?, 0, ?, CURDATE(), ?, ?)";
             $stmt = $conn->prepare($insertSql);
             $stmt->bind_param("sssiss", $uploadPath, $formName, $formDescription, $currentMemberID, $formDate, $statut);
             $stmt->execute();
             $stmt->close();
 
-            // Redirect to the original page or display a success message
             header('Location: dashboardProd.php');
             exit;
         } else {
