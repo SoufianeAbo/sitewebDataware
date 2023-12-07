@@ -65,7 +65,7 @@ function toggleMembers() {
     createTeam.classList.add("hidden");
 }
 
-function toggleCreateTeams() {
+function toggleCreateTeams(event) {
     teamsBtn.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
     teamsBtn2.className = "flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item cursor-pointer";
 
@@ -79,6 +79,25 @@ function toggleCreateTeams() {
     membersTable.classList.add("hidden");
     bigMmbrsTable.classList.add("hidden");
     createTeam.classList.remove("hidden"); 
+    const teamHeader = document.getElementById("teamHeader");
+    const modifyBtnHeader = document.getElementById("modifyBtnHeader");
+    
+    if (event.target.id === "addTeamBtn") {
+        document.getElementById("createTeam").action = "createProject.php";
+        teamHeader.innerHTML = "Create project";
+        modifyBtnHeader.innerHTML = "<i class='fa-solid fa-users-gear mr-3'></i>Create project";
+
+    } else if (event.target.classList.contains("modifyBtn")) {
+        document.getElementById("createTeam").action = "modifyProject.php";
+        const modifyID = this.getAttribute('data-id');
+        const selectedModifyInput = document.getElementById('selectedModify');
+
+        teamHeader.innerHTML = "Modify project";
+        modifyBtnHeader.innerHTML = "<i class='fa-solid fa-users-gear mr-3'></i>Modify project";
+
+        selectedModifyInput.value = modifyID;
+        console.log("value is" + selectedModifyInput.value);
+    }
 }
 
 projectsBtn.addEventListener("click", toggleProjects);
