@@ -85,18 +85,6 @@ include 'userCheck.php';
             }
         }
     </script>
-</head>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tailwind Admin Template</title>
-    <meta name="author" content="David Grzyb">
-    <meta name="description" content="">
-
-    <!-- Tailwind -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
@@ -110,6 +98,7 @@ include 'userCheck.php';
         .account-link:hover { background: #3d68ff; }
     </style>
 </head>
+
 <body class="bg-gray-100 font-family-karla flex">
 
     <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
@@ -182,6 +171,10 @@ include 'userCheck.php';
                     <i class="fa-solid fa-users mr-3"></i>
                     Teams
                 </a>
+                <a class="flex items-center active-nav-link text-white py-2 pl-4 nav-item" id = "MembersBtn2">
+                    <i class="fa-solid fa-user-group mr-3"></i>
+                    Members
+                </a>
                 <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" id = "ProjectsBtn2">
                     <i class="fa-solid fa-list-check mr-3"></i>
                     Projects
@@ -201,9 +194,6 @@ include 'userCheck.php';
 
                 <?php
                 include 'connection.php';
-
-                // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $currentMemberID = $_SESSION['id'];
                     $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID OR id = $equipeID";
@@ -226,7 +216,6 @@ include 'userCheck.php';
                             $scrumMasterLastName = $scrumMasterData['lastName'];
                             $scrumMasterImg = $scrumMasterData['image'];
                         } else {
-                            // Handle the case where the scrum master is not found
                             $scrumMasterFirstName = 'N/A';
                             $scrumMasterLastName = 'N/A';
                         }
@@ -264,8 +253,6 @@ include 'userCheck.php';
                 <?php
                     include 'connection.php';
 
-                    // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
 
@@ -298,7 +285,6 @@ include 'userCheck.php';
                                     $scrumMasterLastName = $scrumMasterData['lastName'];
                                     $scrumMasterImg = $scrumMasterData['image'];
                                 } else {
-                                    // Handle the case where the scrum master is not found
                                     $scrumMasterFirstName = 'N/A';
                                     $scrumMasterLastName = 'N/A';
                                 }
@@ -312,7 +298,6 @@ include 'userCheck.php';
                                     $prodMasterLastName = $prodMasterData['lastName'];
                                     $prodMasterImg = $prodMasterData['image'];
                                 } else {
-                                    // Handle the case where the scrum master is not found
                                     $prodMasterFirstName = 'N/A';
                                     $prodMasterLastName = 'N/A';
                                 }
@@ -352,7 +337,7 @@ include 'userCheck.php';
                                 echo '</div>';
                             }
                         } else {
-                            // Handle the case where no projects are found for the current user
+
                         }
                     }
                     ?>
@@ -402,7 +387,6 @@ include 'userCheck.php';
                                     $MembersColor = "red";
                                 }
                             } else {
-                                // Handle the case where the scrum master is not found
                                 $MembersFirstName = 'N/A';
                                 $MembersLastName = 'N/A';
                             }
@@ -441,9 +425,6 @@ include 'userCheck.php';
             <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a team</h1>
             <?php
                 include 'connection.php';
-
-                // Check if the user is logged in
-                    // User is logged in
                     $equipeID = $_SESSION['equipeID'];
                     $currentMemberID = $_SESSION['id'];
                     $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
@@ -467,7 +448,6 @@ include 'userCheck.php';
                             $scrumMasterLastName = $scrumMasterData['lastName'];
                             $scrumMasterImg = $scrumMasterData['image'];
                         } else {
-                            // Handle the case where the scrum master is not found
                             $scrumMasterFirstName = 'N/A';
                             $scrumMasterLastName = 'N/A';
                         }
@@ -517,7 +497,6 @@ include 'userCheck.php';
                                 $MembersColor = "red";
                             }
                         } else {
-                            // Handle the case where the scrum master is not found
                             $MembersFirstName = 'N/A';
                             $MembersLastName = 'N/A';
                         }
@@ -544,7 +523,7 @@ include 'userCheck.php';
                 <form action = "createTeam.php" method = "POST" class="w-full flex justify-center items-center hidden flex-col" enctype="multipart/form-data" id = "createTeam">
                     <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5 py-8" id = "teamHeader">Create team</h1>
 
-                    <div class = "grid grid-rows-2 grid-cols-2 w-4/6 gap-24">
+                    <div class = "grid md:grid-rows-2 grid-cols-1 md:grid-cols-2 w-4/6 gap-24">
                         <div class = "row-span-2 w-full">
                             <div class = "flex flex-col justify-center items-center w-full gap-5">
                                 <div class = "w-full p-4 flex flex-col justify-center items-center shadow-md bg-white">
