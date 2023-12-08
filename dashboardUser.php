@@ -157,7 +157,6 @@ if (isset($_SESSION['email'])) {
             <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
                 <button @click="isOpen = !isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                     <?php
-                        include 'connection.php';
                             $image = $_SESSION['image'];
                             echo "<img src='$image'>";
                     ?>
@@ -203,8 +202,6 @@ if (isset($_SESSION['email'])) {
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your teams</h1>
 
                 <?php
-                include 'connection.php';
-
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT * FROM teams WHERE id = $equipeID";
                     
@@ -265,8 +262,6 @@ if (isset($_SESSION['email'])) {
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your projects</h1>
 
                 <?php
-                    include 'connection.php';
-
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
 
@@ -360,7 +355,6 @@ if (isset($_SESSION['email'])) {
             <main class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "MembersTable">
                 <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Members</h1>
                 <?php
-                    include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT * FROM teams WHERE id = $equipeID";
                     
@@ -433,8 +427,6 @@ if (isset($_SESSION['email'])) {
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your projects</h1>
 
                 <?php
-                include 'connection.php';
-
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
                     

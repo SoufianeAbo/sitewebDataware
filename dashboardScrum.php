@@ -104,9 +104,6 @@ include 'userCheck.php';
     <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
         <div class="p-6">
             <a class="text-white text-3xl font-semibold uppercase hover:text-gray-300"><img src="./img/white3.png" alt=""></a>
-            <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-                <i class="fas fa-plus mr-3"></i> New Report
-            </button> -->
             <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center" id = "addTeamBtn">
                 <i class="fa-solid fa-users-gear mr-3"></i> Create team
             </button>
@@ -132,17 +129,11 @@ include 'userCheck.php';
     </aside>
 
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
-        <!-- Desktop Header -->
         <header class="w-full items-center bg-blue-950 py-2 px-6 hidden sm:flex">
             <div class="w-1/2"></div>
             <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
                 <button @click="isOpen = !isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                    <!-- <img src="./img/abdellah.png"> -->
                     <?php
-                        include 'connection.php';
-
-                        // Check if the user is logged in
-                            // User is logged in
                             $image = $_SESSION['image'];
                             echo "<img src='$image'>";
                     ?>
@@ -155,7 +146,6 @@ include 'userCheck.php';
             </div>
         </header>
 
-        <!-- Mobile Header & Nav -->
         <header x-data="{ isOpen: false }" class="w-full bg-sidebar py-5 px-6 sm:hidden">
             <div class="flex items-center justify-between">
                 <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">DATAWARE</a>
@@ -165,7 +155,6 @@ include 'userCheck.php';
                 </button>
             </div>
 
-            <!-- Dropdown Nav -->
             <nav :class="isOpen ? 'flex': 'hidden'" class="flex flex-col pt-4">
                 <a class="flex items-center active-nav-link text-white py-2 pl-4 nav-item" id = "TeamsBtn2">
                     <i class="fa-solid fa-users mr-3"></i>
@@ -183,9 +172,6 @@ include 'userCheck.php';
                     <i class="fas fa-sign-out-alt mr-3"></i> Sign Out
                 </button>
             </nav>
-            <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-                <i class="fas fa-plus mr-3"></i> New Report
-            </button> -->
         </header>
     
         <div class="w-full overflow-x-hidden border-t flex flex-col">
@@ -193,7 +179,6 @@ include 'userCheck.php';
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your teams</h1>
 
                 <?php
-                include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
                     $currentMemberID = $_SESSION['id'];
                     $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID OR id = $equipeID";
@@ -251,8 +236,6 @@ include 'userCheck.php';
                 <h1 class="text-3xl text-black pb-6 col-span-3">Your projects</h1>
 
                 <?php
-                    include 'connection.php';
-
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT projectID FROM teams WHERE id = $equipeID";
 
@@ -346,7 +329,6 @@ include 'userCheck.php';
             <main class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "MembersTable">
                 <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Members</h1>
                 <?php
-                    include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
                     $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID OR id = $equipeID";
                     
@@ -424,7 +406,6 @@ include 'userCheck.php';
             <form action = "add.php" method = "POST" class="w-full grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-5 p-6 justify-center items-center hidden gap-5" id = "AllMmbrsTable">
             <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a team</h1>
             <?php
-                include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
                     $currentMemberID = $_SESSION['id'];
                     $sql = "SELECT * FROM teams WHERE scrumMasterID = $currentMemberID";
@@ -473,7 +454,6 @@ include 'userCheck.php';
                 ?>  
             <h1 class="text-3xl text-black pb-6 col-span-1 md:col-span-2 lg:col-span-5">Select a member</h1>
                 <?php
-                    include 'connection.php';
                     $equipeID = $_SESSION['equipeID'];
                     $MembersQuery = "SELECT * FROM users WHERE equipeID = 0";
                     $MembersResult = $conn->query($MembersQuery);
